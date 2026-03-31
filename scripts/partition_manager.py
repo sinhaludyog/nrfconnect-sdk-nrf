@@ -6,7 +6,7 @@
 
 import argparse
 import sys
-from os import path
+from os import path, getenv
 from pprint import pformat
 
 import yaml
@@ -694,6 +694,33 @@ def load_reqs(input_config):
 
     return reqs
 
+def get_override_range(gaps):
+    start_env = getenv("PM_OVERRIDE_APP_START")
+    end_env = getenv("PM_OVERRIDE_APP_END")
+
+    if start_env and end_env:
+        print("[DEBUG] PM override enabled")
+
+        try:
+            # Support hex (0x...) and decimal
+            start = int(start_env, 0)
+            end = int(end_env, 0)
+        except ValueError:
+            raise ValueError(
+                f"Invalid PM override values: start={start_env}, end={end_env}"
+            )
+
+        if start >= end:
+            raise ValueError(
+                f"PM override invalid: start (0x{start:X}) >= end (0x{end:X})"
+            )
+
+        return start, end - start
+
+    # fallback to first gap
+    start, end = gaps[0]
+
+    return start, end - start
 
 def get_dynamic_area_start_and_size(static_config, base, size, dp):
     # Remove app from this dict to simplify the case where partitions
@@ -723,8 +750,8 @@ def get_dynamic_area_start_and_size(static_config, base, size, dp):
             " there is only one gap left. Alternatively re-order the already "
             "defined static partitions so that only one gap remains.")
 
-    start, end = gaps[0]
-    return start, end - start
+    # start, end = gaps[0]
+    return get_override_range(gaps)
 
 
 def calculate_end_address(pm_config):

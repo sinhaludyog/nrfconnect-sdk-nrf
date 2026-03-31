@@ -18,6 +18,15 @@ config DFU_TARGET_MCUBOOT
 	imply MPU_ALLOW_FLASH_WRITE
 	help
 	  Enable support for updates that are performed by MCUboot.
+config DFU_TARGET_MCUBOOT_EXT
+	bool "MCUBoot update support with extension target for primary image"
+	default y
+	depends on IMG_MANAGER
+	depends on BOOTLOADER_MCUBOOT
+	select DFU_TARGET_STREAM
+	imply MPU_ALLOW_FLASH_WRITE
+	help
+	  Enable support for updates that are performed by MCUboot.
 
 config DFU_TARGET_SMP
 	bool "DFU SMP target for external update support"
