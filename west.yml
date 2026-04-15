@@ -35,6 +35,8 @@ manifest:
       url-base: https://github.com/boschsensortec
     - name: eembc
       url-base: https://github.com/eembc
+    - name: kimbal
+      url-base: https://github.com/sinhaludyog
 
   # If not otherwise specified, the projects below should be obtained
   # from the ncs remote.
@@ -130,8 +132,8 @@ manifest:
           upstream-sha: 1225729e8d84075f03bf9fc51eee85d84dfb0091
           compare-by-default: true
     - name: mcuboot
-      repo-path: sdk-mcuboot
-      revision: ncs-v3.1.1
+      repo-path: nrfconnect-sdk-mcuboot
+      revision: release/ncs-v3.1.1
       path: bootloader/mcuboot
     - name: qcbor
       url: https://github.com/laurencelundblade/QCBOR
