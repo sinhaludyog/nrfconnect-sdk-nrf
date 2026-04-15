@@ -135,6 +135,7 @@ manifest:
       repo-path: nrfconnect-sdk-mcuboot
       revision: release/ncs-v3.1.1
       path: bootloader/mcuboot
+      remote: kimbal
     - name: qcbor
       url: https://github.com/laurencelundblade/QCBOR
       revision: 751d36583a9ce1a640900c57e13c9b6b8f3a2ba2
