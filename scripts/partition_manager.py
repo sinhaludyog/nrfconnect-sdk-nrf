@@ -696,6 +696,35 @@ def load_reqs(input_config):
 
 
 def get_dynamic_area_start_and_size(static_config, base, size, dp):
+    # Check for overlapping partitions. If any two partitions overlap,
+    # return the start and size of the dynamic partition directly.
+    all_partitions = [(name, config) for name, config in static_config.items()
+                      if 'span' not in config.keys()]
+    sorted_parts = sorted(all_partitions, key=lambda item: item[1].get('address', 0))
+    print("\n--- PARTITION OVERLAP CHECKER ---")
+    for part_name, p_config in sorted_parts:
+        # Some partitions might lack a region (like external ones), so we use .get() safely
+        region = p_config.get('region', 'NO_REGION')
+        part_addr = hex(p_config.get('address', 0))
+        part_size = hex(p_config.get('size', 0))
+
+        print(f"[{region}] {part_name}: Start addr: {part_addr} @ Size: {part_size}")
+    print("-------------------------------------\n")
+    for i in range(len(sorted_parts) - 1):
+        curr_name, curr_config = sorted_parts[i]
+        next_name, next_config = sorted_parts[i + 1]
+
+        end_of_current = curr_config['address'] + curr_config['size']
+        start_of_next = next_config['address']
+
+        if end_of_current > start_of_next:
+            print(f">>> OVERLAP DETECTED between '{curr_name}' and '{next_name}'!")
+
+            # Overlapping partitions detected, return dp's address and size directly.
+            if dp in static_config and 'address' in static_config[dp] and 'size' in static_config[dp]:
+                print(f">>> Bypassing dynamic partition logic: Returning static '{dp}' values.\n")
+                return static_config[dp]['address'], static_config[dp]['size']
+
     # Remove app from this dict to simplify the case where partitions
     # before and after are removed.
     proper_partitions = [config for name, config in static_config.items()

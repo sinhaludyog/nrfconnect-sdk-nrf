@@ -26,6 +26,10 @@ DEF_DFU_TARGET(modem_delta);
 #include "dfu/dfu_target_mcuboot.h"
 DEF_DFU_TARGET(mcuboot);
 #endif
+#ifdef CONFIG_DFU_TARGET_MCUBOOT_EXT
+#include "dfu/dfu_target_mcuboot_ext.h"
+DEF_DFU_TARGET(mcuboot_ext);
+#endif
 #ifdef CONFIG_DFU_TARGET_FULL_MODEM
 #include "dfu/dfu_target_full_modem.h"
 DEF_DFU_TARGET(full_modem);
@@ -53,6 +57,11 @@ enum dfu_target_image_type dfu_target_img_type(const void *const buf, size_t len
 	}
 #ifdef CONFIG_DFU_TARGET_MCUBOOT
 	if (dfu_target_mcuboot_identify(buf)) {
+		return DFU_TARGET_IMAGE_TYPE_MCUBOOT;
+	}
+#endif
+#ifdef CONFIG_DFU_TARGET_MCUBOOT_EXT
+	if (dfu_target_mcuboot_ext_identify(buf)) {
 		return DFU_TARGET_IMAGE_TYPE_MCUBOOT;
 	}
 #endif
@@ -96,6 +105,11 @@ int dfu_target_init(int img_type, int img_num, size_t file_size, dfu_target_call
 #ifdef CONFIG_DFU_TARGET_MCUBOOT
 	if (img_type == DFU_TARGET_IMAGE_TYPE_MCUBOOT) {
 		new_target = &dfu_target_mcuboot;
+	}
+#endif
+#ifdef CONFIG_DFU_TARGET_MCUBOOT_EXT
+	if (img_type == DFU_TARGET_IMAGE_TYPE_MCUBOOT) {
+		new_target = &dfu_target_mcuboot_ext;
 	}
 #endif
 #ifdef CONFIG_DFU_TARGET_MODEM_DELTA

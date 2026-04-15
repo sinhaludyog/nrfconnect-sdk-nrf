@@ -9,15 +9,27 @@ menuconfig DFU_TARGET
 
 if (DFU_TARGET)
 
+choice
+	prompt "MCUboot DFU Target Type"
+	default DFU_TARGET_MCUBOOT
+	depends on IMG_MANAGER && BOOTLOADER_MCUBOOT
+
 config DFU_TARGET_MCUBOOT
 	bool "MCUBoot update support"
-	default y
-	depends on IMG_MANAGER
-	depends on BOOTLOADER_MCUBOOT
 	select DFU_TARGET_STREAM
 	imply MPU_ALLOW_FLASH_WRITE
 	help
 	  Enable support for updates that are performed by MCUboot.
+
+config DFU_TARGET_MCUBOOT_EXT
+	bool "MCUBoot update support (with extension)"
+	select DFU_TARGET_STREAM
+	imply MPU_ALLOW_FLASH_WRITE
+	help
+	  Enable support for updates that are performed by MCUboot,
+	  with an extension that supports targeting the secondary slot.
+
+endchoice
 
 config DFU_TARGET_SMP
 	bool "DFU SMP target for external update support"
