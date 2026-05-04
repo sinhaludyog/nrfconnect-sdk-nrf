@@ -88,5 +88,10 @@ config FPROTECT_ALLOW_COMBINED_REGIONS
 	help
 	  Intended for use with NRF54L series devices. Gives total of 62kB
 	  lockable memory.
+	  
+config FPROTECT_OVERRIDE_RRAM_REGION
+	bool "Allow to override RRAM REGION config multi times"
+	help
+	  This option to allow fprotect function allow a rram region able to write multi-times.
 
 endif # FPROTECT

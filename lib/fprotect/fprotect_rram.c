@@ -43,10 +43,12 @@ int fprotect_area(uint32_t start, size_t size)
 	if (size > REGION_SIZE_MAX) {
 		return -EINVAL;
 	}
+#if !defined(CONFIG_FPROTECT_OVERRIDE_RRAM_REGION) || !(CONFIG_FPROTECT_OVERRIDE_RRAM_REGION)
 	if (nrf_rramc_region_config_raw_get(NRF_RRAMC, RRAMC_REGION_FOR_FPROTECT) !=
 	    RRAMC_REGION_FOR_FPROTECT_DEFAULT_VALUE) {
 		return -ENOSPC;
 	}
+#endif
 #if defined(CONFIG_FPROTECT_ALLOW_COMBINED_REGIONS)
 
 	if (size > SINGLE_REGION_SIZE) {
@@ -57,11 +59,13 @@ int fprotect_area(uint32_t start, size_t size)
 			 */
 			return -EINVAL;
 		}
+#if !defined(CONFIG_FPROTECT_OVERRIDE_RRAM_REGION) || !(CONFIG_FPROTECT_OVERRIDE_RRAM_REGION)
 		if (nrf_rramc_region_config_raw_get(NRF_RRAMC,
 			RRAMC_REGION_FOR_COMBINED_REGIONS_FPROTECT) !=
 			RRAMC_REGION_FOR_FPROTECT_DEFAULT_VALUE) {
 			return -ENOSPC;
 		}
+#endif
 		nrf_rramc_region_config_t config = {
 			.address = 0,
 			.permissions =	NRF_RRAMC_REGION_PERM_READ_MASK |
